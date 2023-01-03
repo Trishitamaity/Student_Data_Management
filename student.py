@@ -1,92 +1,111 @@
 import csv
-import matplotlib.pyplot as plt
-
-def batch_add():
-    with open("batch.csv", "a",newline="") as obj:
+   
+def student_add():
+    with open("student.csv", "a",newline="") as obj:
         wobj=csv.writer(obj)
         while True:
-            bid=input("Enter Batch ID ")
-            bname=input("Enter Batch Name ")
-            dname = input("Enter Department ID ")
-            cname=input("Enter Course ID ")
-            sid = input("Enter Student ID ")
-            record=[bid,bname,dname,cname,sid]
+            id=input("Enter Student ID ")
+            name=input("Enter Name ")
+            roll=input("Enter Class Roll Number ")
+            batch=input("Enter Batch ID ")
+            record=[id,name,roll,batch]
             wobj.writerow(record)
-            ch = input("exit to exit, any other key to continue ")
-            if ch == "exit":
+            ch=input("exit to exit, any other key to continue ")
+            if ch=="exit":
                 break
 
-def display_students():
-    bid=input("Enter Batch ID ")
-    with open("batch.csv", "r") as obj1:
-        with open("student.csv", "r") as obj2:
-            obj1.seek(0)
-            robj1 = csv.reader(obj1)
-            for i in robj1:
-                obj2.seek(0)
-                robj2 = csv.reader(obj2)
-                for j in robj2:
-                    if i[0] == bid and i[4] == j[0]:
-                        print(j[1])
+def student_display():
+    with open("student.csv", "r") as obj:
+        obj.seek(0)
+        robj=csv.reader(obj)
+        for i in robj:
+            print(i)
 
+def student_update():
+    with open("student.csv", "r") as obj:
+        robj=csv.reader(obj)    
+        L=[]
+        found=False
+        fid = input("Enter Student ID to edit data ")
+        for i in robj:
+            if i[0]==fid:
+                found=True
+                nid=input("Enter new Student ID ")
+                name=input("Enter new Name ")
+                roll=input("Enter new Class Roll Number ")
+                batch=input("Enter new Batch Name ")
+                i[0]=nid
+                i[1]=name
+                i[2]=roll
+                i[3]=batch
+            else:
+                print("Student not found")
+            L.append(i)
 
-def display_courses():
-    bid = input("Enter Batch ID ")
-    with open("batch.csv", "r") as obj1:
-       with open("course.csv", "r") as obj2:
-            obj1.seek(0)
-            robj1 = csv.reader(obj1)
-            for i in robj1:
-                obj2.seek(0)
-                robj2 = csv.reader(obj2)
-                for j in robj2:
-                    if i[0] == bid and i[3] == j[0]:
-                        print(j[1])
+    if found==False:
+        print("Student cannot be found")
+    else:
+        with open("student.csv", "w+", newline="") as obj:
+            wobj=csv.writer(obj)
+            wobj.writerows(L)
+            obj.seek(0)
+            robj=csv.reader(obj)
+            for i in robj:
+                print(i)
 
+def student_delete():
+    with open("student.csv", "r") as obj:
+        robj=csv.reader(obj)
+        L=[]
+        found=False
+        fid = input("Enter Student ID to delete data ")
+        for i in robj:
+            if i[0]==fid:
+                found=True
+            else:
+                print("Student not found")
+                L.append(i)
 
-def batch_performance():
-    bid = input("Enter Batch ID ")
-    with open("batch.csv", "r") as obj1:
-        with open("student.csv", "r") as obj2:
-            with open("course.csv", "r") as obj3:
-                obj1.seek(0)
-                robj1 = csv.reader(obj1)
-                for i in robj1:
-                    #print(i)
-                    obj2.seek(0)
-                    robj2 = csv.reader(obj2)
-                    for j in robj2:
-                        #print(j)
-                        obj3.seek(0)
-                        robj3 = csv.reader(obj3)
-                        for k in robj3:
-                            #print(k)
-                            if i[0] == bid and i[0] == j[3] and j[0] == k[2]:
-                                print("ROLL", j[2], " ", "NAME", j[1], " ", "% MARKS", k[3])
+    if found==False:
+        print("Student cannot be found")
+    else:
+        with open("student.csv", "w+", newline="") as obj:
+            wobj = csv.writer(obj)
+            wobj.writerows(L)
+            obj.seek(0)
+            robj = csv.reader(obj)
+            for i in robj:
+                print(i)
 
+def report_card():
+    name=input("Enter name of student ")
+    a="report_card_"+name
+    with open(a+".txt","w") as obj:
+        num=int(input("enter number of subjects "))
+        for i in range(num):
+            sub=input("enter subject ")
+            marks=int(input("enter marks out of 100 "))
+            if marks>=90:
+                grade="A"
+            elif marks>=80:
+                grade="B"
+            elif marks>=70:
+                grade="C"
+            elif marks>=60:
+                grade="D"
+            elif marks>=50:
+                grade="E"
+            else:
+                grade="F"
+            if grade == "F":
+                result = "FAIL"
+            else:
+                result = "PASS"
+            k=[sub," ",str(marks)," ",str(grade)," ",result,"\n"]
+            obj.writelines(k)
 
-def pie_chart():
-    name=[]
-    marks=[]
-    with open("course.csv", "r") as obj1:
-        with open("student.csv", "r") as obj2:
-            obj1.seek(0)
-            robj1 = csv.reader(obj1)
-            for i in robj1:
-                obj2.seek(0)
-                robj2 = csv.reader(obj2)
-                for j in robj2:
-                    if i[2] == j[0]:
-                        name.append(j[1])
-                        marks.append(int(i[3]))
-    print(name)
-    print(marks)
-    plt.pie(marks,labels=name)
-    plt.title("% MARKS DISTRIBUTION")
-    plt.show()
-
-batch_add()
-#display_students()
-#display_courses()
-#batch_performance()
-#pie_chart()
+student_add()
+#student_display()
+#student_update()
+#student_delete()
+#report_card()
